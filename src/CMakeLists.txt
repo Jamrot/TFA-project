@@ -16,15 +16,15 @@ include(CheckCXXCompilerFlag)
 
 # Set your openmp include path here
 # For Mac OS with openmp installed by brew, using the following flags
-set(OMP_INCLUDE_DRIS "/opt/homebrew/Cellar/libomp/19.1.3/include")
-set(OMP_LIB_DRIS "/opt/homebrew/Cellar/libomp/19.1.3/lib")
+set(OMP_INCLUDE_DRIS "/usr/lib/gcc/x86_64-linux-gnu/11/include")
+set(OMP_LIB_DRIS "/usr/lib/gcc/x86_64-linux-gnu/11")
 include_directories(${OMP_INCLUDE_DRIS})
 link_directories(${OMP_LIB_DRIS})
 
 # Set your mysql include path here
 # For Mac OS with mysql installed by brew, using the following flags
-set(MYSQL_INCLUDE_DIRS "/opt/homebrew/Cellar/mysql-client/9.0.1/include")
-set(MYSQL_LIB_DRIS "/opt/homebrew/Cellar/mysql-client/9.0.1/lib")
+set(MYSQL_INCLUDE_DIRS "/usr/include/mysql")
+set(MYSQL_LIB_DRIS "/usr/lib/x86_64-linux-gnu")
 include_directories(${MYSQL_INCLUDE_DIRS})
 link_directories(${MYSQL_LIB_DRIS})
 

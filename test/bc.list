@@ -1,0 +1,4 @@
+/home/jamrot/linux/net/core/dev.bc
+/home/jamrot/linux/net/mac80211/iface.bc
+/home/jamrot/linux/net/mac80211/driver-ops.bc
+/home/jamrot/linux/drivers/net/wireless/virtual/mac80211_hwsim.bc

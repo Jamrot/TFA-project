@@ -682,6 +682,7 @@ bool CallGraphPass::doModulePass(Module *M) {
 			if (CallInst *CI = dyn_cast<CallInst>(&*i)) {
 
 				bool icalltag = false;
+				bool directcalltag = false;
 				FuncSet FS;
 				FS.clear();
 				Function *CF = CI->getCalledFunction(); //This API should be replaced in LLVM 15
@@ -750,6 +751,8 @@ bool CallGraphPass::doModulePass(Module *M) {
 								Ctx->Callers[CF].insert(CI);
 							}
 						}
+
+						directcalltag = true;
 					}
 					// InlineAsm
 					else {
@@ -758,7 +761,7 @@ bool CallGraphPass::doModulePass(Module *M) {
 				}
 
 				Ctx->Callees[CI] = FS;
-				if(icalltag){
+				if(icalltag || directcalltag){
 					Ctx->icallTargets+=FS.size();
 					Ctx->ICallees[CI] = FS;
 				}

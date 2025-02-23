@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "Tools.h"
 
-#define LINUX_SOURCE "YOUR LINUX SOURCE LOCATION"
+#define LINUX_SOURCE "/home/jamrot/linux"
 
 bool trimPathSlash(string &path, int slash) {
 	while (slash > 0) {
