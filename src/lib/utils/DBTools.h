@@ -32,8 +32,8 @@ void update_database(GlobalContext *Ctx);
 void update_database_fset(GlobalContext *Ctx);
 
 //Used to speed up database insert
-void build_insert_batch_for_icall_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds);
-void build_insert_batch_for_caller_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds);
+void build_insert_batch_for_caller_target_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds);
+void build_insert_batch_for_target_callee_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds);
 void build_insert_batch_for_func_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds);
 
 void rearrange_fset(GlobalContext *Ctx);

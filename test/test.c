@@ -20,6 +20,7 @@ void multiply(int a, int b) {
 }
 
 void subtract(int a, int b) {
+    multiply(a, b);  // 调用 multiply 函数
     printf("Subtraction result: %d\n", a - b);
 }
 

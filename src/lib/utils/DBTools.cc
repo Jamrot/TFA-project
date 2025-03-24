@@ -9,10 +9,10 @@ void update_database(GlobalContext *Ctx){
     const char *server = "localhost";
     const char *user = "root";
     const char *pwd = "000";
-    const char *database = "icall_data";
+    const char *database = "call_chain_data";
  
-    string table_name_icall = "icall_target_table";
-    string table_name_caller = "caller_table";
+    string table_name_icall = "caller_target_table";
+    string table_name_caller = "target_callee_table";
     string table_name_func = "func_table";
 
     string drop_table_icall = "drop table if exists " + table_name_icall;
@@ -56,24 +56,24 @@ void update_database(GlobalContext *Ctx){
 
     //First clean the old table data
     if(mysql_query(conn, drop_table_icall.c_str())) {
-        OP<<"Drop icall_target_table failed\n";
+        OP<<"Drop caller_target_table failed\n";
         return;
     }
 
     //Create a new table to record our data
     if(mysql_query(conn, create_table_icall.c_str())) {
-        OP<<"Create icall_target_table failed\n";
+        OP<<"Create caller_target_table failed\n";
         return;
     }
 
     //Insert new icall results
     vector<string> cmds;
     cmds.clear();
-    build_insert_batch_for_icall_table(Ctx, 500, cmds);
+    build_insert_batch_for_caller_target_table(Ctx, 500, cmds);
     for(unsigned i = 0; i < cmds.size(); i++){
         string insert_cmd = cmds[i];
         if(mysql_query(conn, insert_cmd.c_str())) {
-            OP<<"Insert icall_target_table failed\n";
+            OP<<"Insert caller_target_table failed\n";
             OP<<"cmd: "<<insert_cmd<<"\n";
         }
     }
@@ -81,22 +81,22 @@ void update_database(GlobalContext *Ctx){
 
     //First clean the old table data
     if(mysql_query(conn, drop_table_caller.c_str())) {
-        OP<<"Drop caller_table failed\n";
+        OP<<"Drop target_callee_table failed\n";
         return;
     }
 
     //Create a new table to record our data
     if(mysql_query(conn, create_table_caller.c_str())) {
-        OP<<"Create caller_table failed\n";
+        OP<<"Create target_callee_table failed\n";
         return;
     }
 
     //Insert new caller results
-    build_insert_batch_for_caller_table(Ctx, 500, cmds);
+    build_insert_batch_for_target_callee_table(Ctx, 500, cmds);
     for(unsigned i = 0; i < cmds.size(); i++){
         string insert_cmd = cmds[i];
         if(mysql_query(conn, insert_cmd.c_str())) {
-            OP<<"Insert caller_table failed\n";
+            OP<<"Insert target_callee_table failed\n";
             OP<<"cmd: "<<insert_cmd<<"\n";
         }
     }
@@ -132,18 +132,18 @@ void update_database(GlobalContext *Ctx){
 }
 
 //Used to speed up database insert
-void build_insert_batch_for_icall_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds){
+void build_insert_batch_for_caller_target_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds){
 
     string insert_statement;
 
     stringstream insertss;
-    insertss << "insert into icall_target_table ";
+    insertss << "insert into caller_target_table ";
     insertss << "(line_number, caller_func, target_num, MLTA_result, Alias_result, target_set_hash, file_location) values ";
 
     int batchnum = 0;
-    unsigned icallnum = Ctx->ICallees.size();
+    unsigned icallnum = Ctx->Callees.size();
     unsigned icallid = 1;
-    for(auto i = Ctx->ICallees.begin(); i!= Ctx->ICallees.end(); i++){
+    for(auto i = Ctx->Callees.begin(); i!= Ctx->Callees.end(); i++){
 
         batchnum++;
         
@@ -239,7 +239,7 @@ void build_insert_batch_for_icall_table(GlobalContext *Ctx, int batch_size, vect
             insertss.str("");
 
             if(icallid != icallnum){
-                insertss << "insert into icall_target_table ";
+                insertss << "insert into caller_target_table ";
                 insertss << "(line_number, caller_func, target_num, MLTA_result, Alias_result, target_set_hash, file_location) values ";
             }
         }
@@ -253,13 +253,14 @@ void build_insert_batch_for_icall_table(GlobalContext *Ctx, int batch_size, vect
 
 }
 
+
 //Used to speed up database insert
-void build_insert_batch_for_caller_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds){
+void build_insert_batch_for_target_callee_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds){
 
     string insert_statement;
 
     stringstream insertss;
-    insertss << "insert into caller_table ";
+    insertss << "insert into target_callee_table ";
     insertss << "(func_set_hash, func_name) values ";
 
     int batchnum = 0;
@@ -271,7 +272,7 @@ void build_insert_batch_for_caller_table(GlobalContext *Ctx, int batch_size, vec
     set<size_t> funcHashSet;
     funcHashSet.clear();
 
-    for(auto i = Ctx->ICallees.begin(); i!= Ctx->ICallees.end(); i++){
+    for(auto i = Ctx->Callees.begin(); i!= Ctx->Callees.end(); i++){
         FuncSet fset = i->second;
         if(fset.empty())
             continue;
@@ -286,7 +287,7 @@ void build_insert_batch_for_caller_table(GlobalContext *Ctx, int batch_size, vec
 
     funcHashSet.clear();
 
-    for(auto i = Ctx->ICallees.begin(); i!= Ctx->ICallees.end(); i++){
+    for(auto i = Ctx->Callees.begin(); i!= Ctx->Callees.end(); i++){
 
         CallInst* cai = i->first;
         FuncSet fset = i->second;
@@ -319,7 +320,7 @@ void build_insert_batch_for_caller_table(GlobalContext *Ctx, int batch_size, vec
                 insertss.str("");
 
                 if(icallid != icallnum){
-                    insertss << "insert into caller_table ";
+                    insertss << "insert into target_callee_table ";
                     insertss << "(func_set_hash, func_name) values ";
                 }
             }
@@ -346,7 +347,7 @@ size_t funcSetHash(FuncSet fset){
 
 void build_insert_batch_for_func_table(GlobalContext *Ctx, int batch_size, vector<string> &cmds){
 
-    for(auto i = Ctx->ICallees.begin(); i!= Ctx->ICallees.end(); i++){
+    for(auto i = Ctx->Callees.begin(); i!= Ctx->Callees.end(); i++){
         
         CallInst* cai = i->first;
         FuncSet fset = i->second;
