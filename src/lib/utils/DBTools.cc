@@ -6,9 +6,9 @@ void update_database(GlobalContext *Ctx){
     MYSQL *conn;
 
     //Use your own database config
-    const char *server = "localhost";
+    const char *server = "mysql";
     const char *user = "root";
-    const char *pwd = "000";
+    const char *pwd = "root";
     const char *database = "call_chain_data";
  
     string table_name_icall = "caller_target_table";

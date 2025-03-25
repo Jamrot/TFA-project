@@ -165,9 +165,15 @@ void TypeBuilderPass::matchStructTypes(Type *identifiedTy, User *U){
 		if(type2->isStructTy() ){
             
             //We get the name of type2
-            StringRef type2_structname = type2->getStructName();
-            if(type2_structname.size() != 0)
-                continue;
+            // StringRef type2_structname = type2->getStructName();
+            // if(type2_structname.size() != 0)
+            //     continue;
+            StructType* ST2 = dyn_cast<StructType>(type2);
+            if (ST2 && !ST2->isLiteral()) {
+                StringRef type2_structname = ST2->getName();
+                if (type2_structname.size() != 0)
+                    continue;
+            }
             
             if(type1->isStructTy()){
                 

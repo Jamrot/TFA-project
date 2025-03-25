@@ -134,14 +134,22 @@ bool CallGraphPass::nextLayerBaseType_new(Value *V, list<CompositeType> &TyList,
         if(FromTy->isPointerTy()){
             FromTy = FromTy->getPointerElementType();
         }
-        if(FromTy->isStructTy()){
-            if(FromTy->getStructName().contains(".union")){
-                return false;
-            }
-            if(FromTy->getStructName().contains(".anon")){
-                return false;
-            }
-        }
+        // if(FromTy->isStructTy()){
+        //     if(FromTy->getStructName().contains(".union")){
+        //         return false;
+        //     }
+        //     if(FromTy->getStructName().contains(".anon")){
+        //         return false;
+        //     }
+        // }
+		if (StructType* ST = dyn_cast<StructType>(FromTy)) {
+			if (!ST->isLiteral()) {
+				StringRef name = ST->getName();
+				if (name.contains(".union") || name.contains(".anon")) {
+					return false;
+				}
+			}
+		}		
 
 		//Handle the case in O2 code:
 		//The GEP is replaced by a cast
