@@ -1,5 +1,5 @@
 CUR_DIR = $(shell pwd)
-LLVM_BUILD := /app/llvm-project/build
+LLVM_BUILD := /usr/lib/llvm-15
 SRC_DIR := ${CURDIR}/src
 SRC_BUILD := ${CURDIR}/build
 

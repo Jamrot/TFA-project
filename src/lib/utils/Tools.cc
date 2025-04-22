@@ -94,6 +94,31 @@ std::string getInstFilename(Instruction *I){
     return Filename;
 }
 
+std::string getFuncFilename(Function *F){
+    
+    if(!F){
+        //OP << "No such Func\n";
+        return "";
+    }
+        
+    //DILocation *Loc = dyn_cast<DILocation>(N);
+    MDNode *N = F->getMetadata("dbg");
+    if (!N)
+        return "";
+
+    //DILocation *Loc = F->getDebugLoc();
+    DISubprogram *Loc = dyn_cast<DISubprogram>(N);
+    if (!Loc ){
+		return "";
+    }
+
+    string Filename = Loc->getFilename().str();
+
+    return Filename;
+    
+}
+
+
 //Used for debug
 std::string getCPPFuncName(Function *F){
 

@@ -17,7 +17,7 @@ include(CheckCXXCompilerFlag)
 # Set your openmp include path here
 # For Mac OS with openmp installed by brew, using the following flags
 set(OMP_INCLUDE_DRIS "/usr/lib/gcc/x86_64-linux-gnu/11/include")
-set(OMP_LIB_DRIS "/usr/lib/gcc/x86_64-linux-gnu/11")
+set(OMP_LIB_DRIS "/usr/lib/llvm-15/lib/")
 include_directories(${OMP_INCLUDE_DRIS})
 link_directories(${OMP_LIB_DRIS})
 

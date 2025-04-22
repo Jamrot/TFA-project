@@ -37,11 +37,13 @@ std::string getValueContent(Value* V);
 //Used for debug
 std::string getInstFilename(Instruction *I);
 
+std::string getInstFilename(Function *F);
+
 //Used for debug
 unsigned getInstLineNo(Instruction *I);
 
 //Used for debug
-unsigned getInstLineNo(Function *F);
+std::string getFuncFilename(Function *F);
 
 //Used for debug
 std::string getCPPFuncName(Function *F);

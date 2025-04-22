@@ -36,6 +36,7 @@ void update_database(GlobalContext *Ctx){
     create_table_caller += "( id int auto_increment, ";
     create_table_caller += "func_set_hash varchar(30), ";
     create_table_caller += "func_name varchar(3000), ";
+    create_table_caller += "file_location varchar(500), ";
     create_table_caller += "primary key(id));";
 
     create_table_func += "( id int auto_increment, ";
@@ -261,7 +262,7 @@ void build_insert_batch_for_target_callee_table(GlobalContext *Ctx, int batch_si
 
     stringstream insertss;
     insertss << "insert into target_callee_table ";
-    insertss << "(func_set_hash, func_name) values ";
+    insertss << "(func_set_hash, func_name, file_location) values ";
 
     int batchnum = 0;
     unsigned long long icallnum = 0;
@@ -309,7 +310,10 @@ void build_insert_batch_for_target_callee_table(GlobalContext *Ctx, int batch_si
             ss << funcsethash;
             insertss << "\"" << ss.str() << "\"" << ",";
 
-            insertss << "\"" <<  f->getName().str()  << "\"" ;
+            insertss << "\"" <<  f->getName().str()  << "\"" << ",";
+            
+            insertss << "\"" << getFuncFilename(f) << "\"" ;
+
             insertss << ")";
 
             //Stop batch collection and build a new batch
@@ -321,7 +325,7 @@ void build_insert_batch_for_target_callee_table(GlobalContext *Ctx, int batch_si
 
                 if(icallid != icallnum){
                     insertss << "insert into target_callee_table ";
-                    insertss << "(func_set_hash, func_name) values ";
+                    insertss << "(func_set_hash, func_name, file_location) values ";
                 }
             }
             else{
