@@ -91,7 +91,19 @@ std::string getInstFilename(Instruction *I){
         goto begin;
     }
 
-    return Filename;
+    Function *F = I->getFunction();
+    if (!F) return Filename;
+
+    DISubprogram *SP = F->getSubprogram();
+    if (!SP) return Filename;
+
+    unsigned Line = SP->getLine();
+    std::stringstream ss;
+
+    ss << Filename << ":" << Line;
+
+    // return Filename;
+    return ss.str();
 }
 
 std::string getFuncFilename(Function *F){
@@ -113,8 +125,13 @@ std::string getFuncFilename(Function *F){
     }
 
     string Filename = Loc->getFilename().str();
+    unsigned line = Loc->getLine();
 
-    return Filename;
+    std::stringstream ss;
+    ss << Filename << ":" << line;
+
+    // return Filename;
+    return ss.str();
     
 }
 
